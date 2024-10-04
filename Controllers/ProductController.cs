@@ -67,13 +67,13 @@ namespace FoddieDB.Controllers
 
         [HttpGet]
         [Route("OrderList")]
-        public ActionResult OrderList(int userId,string email,string type,int orderId)
+        public ActionResult OrderList(string email,string type)
         
             {
                 BAL bal = new BAL();
                 SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DBCS").ToString());
-                Response response = bal.OrderList(userId,email,type, orderId,connection);
-                if (response != null)
+                Response response = bal.OrderList(email,type, connection);
+                if (response.listOrders!= null && response.listOrders.Count > 0)
                     return Ok(new { Response = response });
                 else
                     return NoContent();

@@ -79,7 +79,7 @@ namespace FoddieDB.Controllers
 
 
 
-        [HttpPost]
+        [HttpPut]
         [Route("UpdateOrderStatus")]
         public ActionResult UpdateOrderStatus(Orders order)
         {

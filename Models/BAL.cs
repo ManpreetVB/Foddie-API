@@ -75,10 +75,10 @@ namespace FoddieDB.Models
         }
 
 
-        public Response OrderList(int userId,string email,string type, int orderId, SqlConnection connection)
+        public Response OrderList(string email,string type,  SqlConnection connection)
         {
             DAL dal = new DAL();
-            return dal.OrderList(userId, email, type, orderId, connection);
+            return dal.OrderList( email, type,  connection);
         }
 
 

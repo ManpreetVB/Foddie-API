@@ -459,13 +459,14 @@ namespace FoddieDB.Models
 
 
 
-        public Response OrderList(int userId, string email, string type,int orderId, SqlConnection connection)
+        public Response OrderList( string email, string type, SqlConnection connection)
         {
             SqlCommand cmd = new SqlCommand("sp_OrderList", connection);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
 
-            da.SelectCommand.Parameters.AddWithValue("@UserId", userId);
+            
+
             da.SelectCommand.Parameters.AddWithValue("@Type",type);
             da.SelectCommand.Parameters.AddWithValue("@Email", email);
 
@@ -476,7 +477,7 @@ namespace FoddieDB.Models
             da.SelectCommand.Parameters["@Output_Message"].Direction = ParameterDirection.Output;
             DataTable dt = new DataTable();
             da.Fill(dt);
-            List<Orders> listOrder = new List<Orders>();
+            List<Orders> listOrders = new List<Orders>();
             Response response = new Response();
             if (dt.Rows.Count > 0)
             {
@@ -486,10 +487,15 @@ namespace FoddieDB.Models
                     orders.OrderId = Convert.ToInt32(dt.Rows[i]["OrderId"]);
                     orders.OrderNumber = Convert.ToString(dt.Rows[i]["OrderNumber"]);
                     orders.OrderTotal = dt.Rows[i]["OrderTotal"] != DBNull.Value ? Convert.ToDecimal(dt.Rows[i]["OrderTotal"]) : 0;
-
+                    orders.Price = Convert.ToDecimal(dt.Rows[i]["Price"]);
                     orders.Status = Convert.ToString(dt.Rows[i]["Status"]);
                     orders.CustomerName = Convert.ToString(dt.Rows[i]["CustomerName"]);
-
+                    orders.Quantity = Convert.ToInt32(dt.Rows[i]["Quantity"]);
+                    orders.TotalPrice = Convert.ToDecimal(dt.Rows[i]["TotalPrice"]);
+                    orders.ProductName = Convert.ToString(dt.Rows[i]["ProductName"]);
+                    orders.Description = Convert.ToString(dt.Rows[i]["Description"]);
+                    orders.ImageUrl = Convert.ToString(dt.Rows[i]["ImageUrl"]);
+                    orders.OrderDate = Convert.ToDateTime(dt.Rows[i]["OrderDate"]);
                     if (type == "UserItem")
                     {
                         orders.ProductName = Convert.ToString(dt.Rows[i]["ProductName"]);
@@ -500,13 +506,13 @@ namespace FoddieDB.Models
                         orders.TotalPrice = Convert.ToDecimal(dt.Rows[i]["TotalPrice"]);
                         orders.ImageUrl = Convert.ToString(dt.Rows[i]["ImageUrl"]);
                     }
-                    listOrder.Add(orders);
+                    listOrders.Add(orders);
                 }
-                if (listOrder.Count > 0)
+                if (listOrders.Count > 0)
                 {
                     response.StatusCode = 200;
                     response.StatusMessage = Convert.ToString(cmd.Parameters["@Output_Message"].Value);
-                    response.listOrders = listOrder;
+                    response.listOrders = listOrders;
                 }
                 else
                 {
